@@ -40,6 +40,7 @@ function loadMoreCards() {
   API.fetchCards().then((data) => {
     renderCard(data);
     API.incrementPage();
+    refs.spinner.classList.remove("is-hidden");
     window.scrollBy({
       top: window.innerHeight - 60,
       behavior: "smooth",

@@ -13,12 +13,12 @@ export default {
       .then((data) => data.hits);
   },
   resetPage() {
-    this.page = 1;
+    this.page = 0;
   },
   incrementPage() {
     this.page += 1;
+    console.log(`pages:`, this.page);
   },
-
   get query() {
     return this.cardName;
   },

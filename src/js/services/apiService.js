@@ -1,23 +1,42 @@
+import notify from "../components/notify";
+
 export default {
   cardName: "",
   page: 1,
+  perPage: 12,
+  totalPages: 0,
+  isLastPage: false,
 
   fetchCards() {
     const BASE_URL =
       "https://pixabay.com/api/?image_type=photo&orientation=horizontal";
     const key = "19832746-997e34a134530cdc6ae578e43";
     return fetch(
-      `${BASE_URL}&q=${this.query}&page=${this.page}&per_page=12&key=${key}`,
+      `${BASE_URL}&q=${this.query}&page=${this.page}&per_page=${this.perPage}&key=${key}`,
     )
       .then((response) => response.json())
-      .then((data) => data.hits);
+      .then(({ hits, totalHits }) => {
+        this.totalPages = Math.ceil(totalHits / this.perPage);
+
+        //   перевіряємо умови на останню сторінку
+
+        if (this.totalPages === this.page) {
+          this.isLastPage = true;
+        } else {
+          this.isLastPage = false;
+        }
+        if (!this.totalPages) {
+          return notify();
+        }
+        //this.incrementPage(); // збільшує кількість сторінок
+        return hits;
+      });
   },
   resetPage() {
-    this.page = 0;
+    this.page = 1;
   },
   incrementPage() {
     this.page += 1;
-    console.log(`pages:`, this.page);
   },
   get query() {
     return this.cardName;

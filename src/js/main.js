@@ -3,16 +3,20 @@ import cardMarkup from "../templates/card.hbs";
 import API from "./services/apiService.js";
 import notify from "./components/notify.js";
 import loadLightBox from "./components/lightbox.js";
+import button from "./components/button.js";
+import spinner from "./components/spinner.js";
 
 refs.searchForm.addEventListener("submit", findCards);
 refs.button.addEventListener("click", loadMoreCards);
+console.dir(refs);
 
-// функція для відмальовки розмітки //
+// функція для відмальовки розмітки галереї, приховує кнопку, яка довантажує фото //
 
 function renderCard(cardName) {
   const marcup = cardMarkup(cardName);
   refs.gallery.insertAdjacentHTML("beforeend", marcup);
-  refs.button.classList.remove("is-hidden");
+  button.show();
+
   refs.gallery.addEventListener("click", loadLightBox);
 }
 
@@ -20,42 +24,62 @@ function renderCard(cardName) {
 function findCards(event) {
   event.preventDefault();
 
-  refs.spinner.classList.remove("is-hidden");
-  refs.button.classList.add("is-hidden");
+  button.hide();
+  spinner.show();
 
   const input = refs.searchForm;
   API.query = input.elements.query.value;
+  clearInput();
+
   API.fetchCards()
     .then((data) => {
       renderCard(data);
-      console.log(data);
-      API.incrementPage();
-      refs.spinner.classList.add("is-hidden");
-      if (data.length > 0 && data.length < 12) {
-        refs.button.classList.add("is-hidden");
-      } else if (data.length === 0) {
-        notify();
-        refs.button.classList.add("is-hidden");
+
+      spinner.hide();
+      button.show();
+
+      console.log(API.isLastPage);
+      console.log("загальна кількість", API.totalPages);
+      console.log("теперішня", API.page);
+
+      if (API.isLastPage) {
+        button.hide();
+        console.log("last page");
+        console.log("загальна кількість", API.totalPages);
+        console.log("теперішня", API.page);
+      } else {
+        button.show();
+        spinner.hide();
+
+        console.log("show page");
+        console.log("загальна кількість", API.totalPages);
+        console.log("теперішня", API.page);
+      }
+      if (!API.isLastPage) {
+        button.hide();
       }
     })
     .catch((error) => {
+      //refs.button.classList.add("is-hidden");
       console.log(error);
     });
-  clearInput();
 }
 
 // функція для завантаження більшої к-ті картинок
 
 function loadMoreCards() {
-  refs.spinner.classList.remove("is-hidden");
-  refs.button.classList.add("is-hidden");
+  button.hide();
+  spinner.show();
+  API.incrementPage();
+
   API.fetchCards().then((data) => {
     renderCard(data);
 
-    API.incrementPage();
+    button.show();
+    spinner.hide();
 
-    refs.spinner.classList.add("is-hidden");
-    refs.button.classList.remove("is-hidden");
+    console.log("загальна кількість", API.totalPages);
+    console.log("теперішня", API.page);
     window.scrollBy({
       top: window.innerHeight - 40,
       behavior: "smooth",

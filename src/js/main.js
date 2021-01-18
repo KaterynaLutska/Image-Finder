@@ -28,18 +28,7 @@ function findCards(event) {
   const input = refs.searchForm;
   API.query = input.elements.query.value;
   clearInput();
-
-  API.fetchCards()
-    .then((data) => {
-      renderCard(data);
-      spinner.hide();
-      if (API.isLastPage) {
-        button.hide();
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  searchLastPage();
 }
 
 // функція для завантаження більшої к-ті картинок
@@ -47,19 +36,8 @@ function findCards(event) {
 function loadMoreCards() {
   button.hide();
   spinner.show();
-
   API.incrementPage();
-  API.fetchCards().then((data) => {
-    renderCard(data);
-    spinner.hide();
-    if (API.isLastPage) {
-      button.hide();
-    }
-    window.scrollBy({
-      top: window.innerHeight - 40,
-      behavior: "smooth",
-    });
-  });
+  searchLastPage();
 }
 
 // функція для очистки форми //
@@ -67,4 +45,26 @@ function loadMoreCards() {
 function clearInput() {
   refs.gallery.innerHTML = "";
   API.resetPage();
+}
+
+// функція для перевірки на останню сторінку
+
+function searchLastPage() {
+  API.fetchCards()
+    .then((data) => {
+      renderCard(data);
+      spinner.hide();
+      if (API.isLastPage) {
+        button.hide();
+      }
+      if (API.page > 1) {
+        window.scrollBy({
+          top: window.innerHeight - 40,
+          behavior: "smooth",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }

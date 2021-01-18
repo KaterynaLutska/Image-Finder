@@ -18,6 +18,7 @@ function renderCard(cardName) {
 }
 
 // функція пошуку картинок //
+
 function findCards(event) {
   event.preventDefault();
 
@@ -34,7 +35,6 @@ function findCards(event) {
       spinner.hide();
       if (API.isLastPage) {
         button.hide();
-        console.log(API.isLastPage);
       }
     })
     .catch((error) => {
@@ -47,18 +47,13 @@ function findCards(event) {
 function loadMoreCards() {
   button.hide();
   spinner.show();
-  API.incrementPage();
 
+  API.incrementPage();
   API.fetchCards().then((data) => {
     renderCard(data);
-
     spinner.hide();
-
-    console.log("загальна кількість", API.totalPages);
-    console.log("теперішня", API.page);
     if (API.isLastPage) {
       button.hide();
-      console.log(API.isLastPage);
     }
     window.scrollBy({
       top: window.innerHeight - 40,

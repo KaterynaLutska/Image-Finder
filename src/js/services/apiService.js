@@ -1,5 +1,5 @@
-import button from "../components/button";
 import notify from "../components/notify";
+import spinner from "../components/spinner";
 
 export default {
   cardName: "",
@@ -26,11 +26,10 @@ export default {
         } else {
           this.isLastPage = false;
         }
-        if (this.totalPages === 0) {
-          console.log(this.totalPages);
-          button.hide();
+        if (!this.totalPages) {
           notify();
-          return;
+          spinner.hide();
+          return Promise.reject("Error");
         }
         return hits;
       });

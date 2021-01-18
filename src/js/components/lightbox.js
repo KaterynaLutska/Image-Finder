@@ -6,16 +6,10 @@ import "basiclightbox/dist/basicLightbox.min.css";
 function loadLightBox(event) {
   event.preventDefault();
   const img = event.target;
-
-  console.dir(img.attributes.data.nodeValue);
-
   const imgBigUrl = img.attributes.data.nodeValue;
-  console.log(imgBigUrl);
-
   const instance = basicLightbox.create(
     `<img src= ${imgBigUrl} width="800" height="600">`,
   );
-
   instance.show();
 }
 

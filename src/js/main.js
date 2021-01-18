@@ -1,14 +1,12 @@
 import refs from "./refs";
 import cardMarkup from "../templates/card.hbs";
 import API from "./services/apiService.js";
-import notify from "./components/notify.js";
 import loadLightBox from "./components/lightbox.js";
 import button from "./components/button.js";
 import spinner from "./components/spinner.js";
 
 refs.searchForm.addEventListener("submit", findCards);
 refs.button.addEventListener("click", loadMoreCards);
-console.dir(refs);
 
 // функція для відмальовки розмітки галереї, приховує кнопку, яка довантажує фото //
 
@@ -16,7 +14,6 @@ function renderCard(cardName) {
   const marcup = cardMarkup(cardName);
   refs.gallery.insertAdjacentHTML("beforeend", marcup);
   button.show();
-
   refs.gallery.addEventListener("click", loadLightBox);
 }
 
@@ -34,33 +31,13 @@ function findCards(event) {
   API.fetchCards()
     .then((data) => {
       renderCard(data);
-
       spinner.hide();
-      button.show();
-
-      console.log(API.isLastPage);
-      console.log("загальна кількість", API.totalPages);
-      console.log("теперішня", API.page);
-
       if (API.isLastPage) {
         button.hide();
-        console.log("last page");
-        console.log("загальна кількість", API.totalPages);
-        console.log("теперішня", API.page);
-      } else {
-        button.show();
-        spinner.hide();
-
-        console.log("show page");
-        console.log("загальна кількість", API.totalPages);
-        console.log("теперішня", API.page);
-      }
-      if (!API.isLastPage) {
-        button.hide();
+        console.log(API.isLastPage);
       }
     })
     .catch((error) => {
-      //refs.button.classList.add("is-hidden");
       console.log(error);
     });
 }
@@ -75,11 +52,14 @@ function loadMoreCards() {
   API.fetchCards().then((data) => {
     renderCard(data);
 
-    button.show();
     spinner.hide();
 
     console.log("загальна кількість", API.totalPages);
     console.log("теперішня", API.page);
+    if (API.isLastPage) {
+      button.hide();
+      console.log(API.isLastPage);
+    }
     window.scrollBy({
       top: window.innerHeight - 40,
       behavior: "smooth",

@@ -1,3 +1,4 @@
+import button from "../components/button";
 import notify from "../components/notify";
 
 export default {
@@ -25,10 +26,12 @@ export default {
         } else {
           this.isLastPage = false;
         }
-        if (!this.totalPages) {
-          return notify();
+        if (this.totalPages === 0) {
+          console.log(this.totalPages);
+          button.hide();
+          notify();
+          return;
         }
-        //this.incrementPage(); // збільшує кількість сторінок
         return hits;
       });
   },

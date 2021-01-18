@@ -70,6 +70,7 @@ img {
   height: 300px;
   object-fit: cover;
   max-width: 100%;
+  cursor: pointer;
 }
 
 .stats-item {
